@@ -19,12 +19,29 @@ router.post('/tasks', auth, async (req, res) => {
 
 router.get('/tasks', auth, async (req, res) => {
     try {
-        await req.user.populate('tasks').execPopulate()
+        await req.user.populate({
+            path:'tasks',
+            match:{
+                completed: false
+            }
+        })
         res.send(req.user.tasks)
     } catch (e) {
         res.status(500).send()
     }
 })
+
+// router.get('/tasks', auth, async (req, res) => {
+//     try {
+//         console.log('inside the request')
+//         console.log(req.user._id)
+//         await req.user.populate('tasks')
+//         console.log(req.user.tasks)
+//         res.send(req.user.tasks)
+//     } catch (e) {
+//         res.status(500).send()
+//     }
+// })
 
 router.get('/tasks/:id', auth, async (req, res) => {
     const _id = req.params.id
